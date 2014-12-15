@@ -9,7 +9,7 @@
   Jam\Db\Connections::addConnectionData(
     'mysql:host=127.0.0.1;dbname=orm;charset=utf8',
     'root',
-    '3364752'
+    'password'
   );
 
   print '<pre>';
