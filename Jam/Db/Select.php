@@ -136,7 +136,7 @@ class Select {
       return $this;
     } elseif (preg_match('!^(with)(Via)?[A-Z]!', $method, $methodMatch)) {
       $methodMatch = $methodMatch[1] . (!empty($methodMatch[2]) ? $methodMatch[2] : '');
-      $relationName = $this->underscore(str_replace($methodMatch, '', $method));
+      $relationName = StringsHelper::getUnderscore(str_replace($methodMatch, '', $method));
       $relation = $this->table->getRelation($relationName);
       if (!$relation) {
         throw new \LogicException(
@@ -169,12 +169,6 @@ class Select {
     throw new \BadMethodCallException(
       sprintf('%s: unknown method %s::%s()', get_class($this), get_class($this), $method)
     );
-  }
-
-  protected function underscore($word) {
-    $word = preg_split('!([A-Z]{1}[^A-Z]*)!', $word, -1, PREG_SPLIT_DELIM_CAPTURE^PREG_SPLIT_NO_EMPTY);
-    $word = mb_convert_case(implode('_', $word), MB_CASE_LOWER);
-    return $word;
   }
 
   protected function makeFunctions($function, $column, $alias = null) {

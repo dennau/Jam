@@ -21,7 +21,7 @@ class Model {
   public function __call($method, $args) {
     if (preg_match('!^(get|set|attach|detach)!', $method, $methodMatch)) {
       $methodMatch = $methodMatch[0];
-      $field = $this->underscore(str_replace($methodMatch, '', $method));
+      $field = StringsHelper::getUnderscore(str_replace($methodMatch, '', $method));
       $value = isset($args[0]) ? $args[0] : null;
       if (array_key_exists($field, $this->fields)) {
         if ('get' == $methodMatch) {
@@ -72,12 +72,6 @@ class Model {
   public function table() {
     $class = str_replace('Model', 'Table', get_class($this));
     return $class::instance();
-  }
-
-  protected function underscore($word) {
-    $word = preg_split('!([A-Z]{1}[^A-Z]*)!', $word, -1, PREG_SPLIT_DELIM_CAPTURE^PREG_SPLIT_NO_EMPTY);
-    $word = mb_convert_case(implode('_', $word), MB_CASE_LOWER);
-    return $word;
   }
 
   public function save() {

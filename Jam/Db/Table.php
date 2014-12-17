@@ -29,26 +29,13 @@ abstract class Table {
   }
 
   public function __get($propertyName) {
-    $column = $this->underscore($propertyName);
+    $column = StringsHelper::getUnderscore($propertyName);
     if (in_array($column, $this->columns)) {
       return $this->tableName . '.' . $column;
     }
     throw new \BadMethodCallException(
       sprintf('%s: unknown property %s::%s', get_class($this), get_class($this), $propertyName)
     );
-  }
-
-  protected function underscore($word) {
-    $word = preg_split('!([A-Z]{1}[^A-Z]*)!', $word, -1, PREG_SPLIT_DELIM_CAPTURE^PREG_SPLIT_NO_EMPTY);
-    $word = mb_convert_case(implode('_', $word), MB_CASE_LOWER);
-    return $word;
-  }
-
-  protected function camelize($word) {
-    $word = str_replace('_', ' ', $word);
-    $word = mb_convert_case($word, MB_CASE_TITLE);
-    $word = lcfirst(str_replace(' ', '', $word));
-    return $word;
   }
 
   final private function __construct() {
@@ -162,13 +149,13 @@ abstract class Table {
     }
     $table = $relation->getViaTable();
     $nativeModelField = str_replace($table . '.', '', $relation->getMyFieldInVia());
-    $nativeMethod = $this->camelize('get_' . $nativeModelField);
+    $nativeMethod = StringsHelper::getCamelCase('get_' . $nativeModelField);
     $data = [
       $nativeModelField => $nativeModel->$nativeMethod(),
     ];
     if (null !== $relatedModel) {
       $relatedModelField = str_replace($table . '.', '', $relation->getRelatedTableFieldInVia());
-      $relatedMethod = $this->camelize('get_' . $relatedModelField);
+      $relatedMethod = StringsHelper::getCamelCase('get_' . $relatedModelField);
       $data[$relatedModelField] = $relatedModel->$relatedMethod();
     }
     return $data;
